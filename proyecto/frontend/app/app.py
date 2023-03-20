@@ -7,7 +7,7 @@ import os
 from models import users, User
 
 # Login
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 
 app = Flask(__name__, static_url_path='')
 login_manager = LoginManager()
@@ -25,6 +25,19 @@ def serve_static(path):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/register')
+def register():
+    formulario = RegisterForm(None if request.method != 'POST' else request.form)
+    if request.method == "POST" and formulario.validate():
+        user = User(2, formulario.user.data, formulario.password.data, formulario.email.data)
+        users.append(user)
+
+    # form = RegisterForm(None if request.method != 'POST' else request.form)
+    # if form.validate():
+    #     user = User(2, form.user.data, form.email.data, form.password.data)
+    #     user.append(user)
+    return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
